@@ -3,9 +3,8 @@ terraform {
 }
 
 provider "aws" {
-  region                  = "us-east-1"
-  shared_credentials_file = "~/.aws/credentials"
-  # profile                 = "your-profile-name"
+  region = "us-east-1"
+  # profile = "your-profile-name"
   version = ">= 2.35.0"
 }
 
