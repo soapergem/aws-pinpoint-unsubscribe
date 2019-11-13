@@ -11,7 +11,7 @@ def get_dynamo_client():
     return client
 
 
-def import_and_create_segment(app_id, segment_name, role_name, s3_url):
+def import_and_create_segment(app_id, segment_name, role_arn, s3_url):
     session = boto3.Session(profile_name=AWS_PROFILE_NAME, region_name=AWS_REGION)
     client = session.client("pinpoint")
     response = client.create_import_job(
@@ -20,7 +20,7 @@ def import_and_create_segment(app_id, segment_name, role_name, s3_url):
             "DefineSegment": True,
             "Format": "CSV",
             "RegisterEndpoints": True,
-            "RoleArn": role_name,
+            "RoleArn": role_arn,
             "S3Url": s3_url,
             "SegmentName": segment_name,
         },
@@ -38,7 +38,7 @@ def insert_batch_to_dynamo(client, table_name, batch):
 def upload_file_to_s3(filepath, bucket, key):
     session = boto3.Session(profile_name=AWS_PROFILE_NAME, region_name=AWS_REGION)
     client = session.client("s3")
-    response = client.upload_file(filepath, bucket, key)
+    response = client.upload_file(str(filepath), bucket, key)
     return response
 
 

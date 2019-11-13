@@ -16,7 +16,7 @@ script with the following arguments and required options:
 ./main.py PATH_TO_YOUR_CSV_FILE.csv
     --app-id PINPOINT_APPLICATION_ID
     --dynamo-table DYNAMO_TABLE_NAME
-    --role-name IAM_ROLE_NAME
+    --role-arn PINPOINT_IAM_ROLE
     --segment-name SEGMENT_NAME_OF_YOUR_CHOOSING
     --s3-bucket S3_BUCKET_NAME
 ```
@@ -57,4 +57,4 @@ If you don't want such an ugly URL for your unsubscribe link, you can add a Clou
 front of your API Gateway, assign it a certificate from ACM, enable HTTP to HTTPS forwarding, and set
 up a CNAME record in Route53 to point to the CF distribution. I didn't try to codify this part in
 Terraform (yet) because it's dependent on your domain name and certificate. It doesn't really matter
-that much though, since AWS is going to prepend your link with https://awstrack.me anyway.
+that much though, since AWS is going to prepend your link with https://awstrack.me.

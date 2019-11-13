@@ -7,7 +7,7 @@ output "pinpoint_app_id" {
 }
 
 output "pinpoint_iam_role" {
-  value = aws_iam_role.pinpoint_importer.name
+  value = aws_iam_role.pinpoint_importer.arn
 }
 
 output "s3_bucket_name" {
