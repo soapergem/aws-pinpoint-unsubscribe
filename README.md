@@ -1,10 +1,12 @@
 # aws-pinpoint-unsubscribe
+
 A simple serverless API for handling unsubscribes with AWS Pinpoint.
 
 ## Installation
 
 Run the Terraform scripts first. This will print various outputs that you will need
-to feed into the Python script.
+to feed into the Python script. If you want to reference a profile name, then be sure
+to update both the `terraform/main.tf` and `importer/aws.py` files first.
 
 Once the Terraform has been run, install the pip dependencies specified in requirements.txt
 to your virtual environment (e.g. `pip install -r requirements.txt`). Then invoke the Python
@@ -35,6 +37,9 @@ The code is currently set up to also support the following, optional headers:
 * Middle Name
 * Last Name
 
+Feel free to fork this project and add in code to handle additional attributes
+if you want to.
+
 ## Using the unsubscribe link in Pinpoint campaigns
 
 When you actually need to send your campaign, include a link like this in the Message Template:
@@ -51,4 +56,5 @@ This will be displayed as one of the Terraform outputs.
 If you don't want such an ugly URL for your unsubscribe link, you can add a Cloudfront distribution in
 front of your API Gateway, assign it a certificate from ACM, enable HTTP to HTTPS forwarding, and set
 up a CNAME record in Route53 to point to the CF distribution. I didn't try to codify this part in
-Terraform (yet) because it's dependent on your domain name and certificate.
+Terraform (yet) because it's dependent on your domain name and certificate. It doesn't really matter
+that much though, since AWS is going to prepend your link with https://awstrack.me anyway.
