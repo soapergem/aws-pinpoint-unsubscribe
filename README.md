@@ -4,9 +4,9 @@ A simple serverless API for handling unsubscribes with AWS Pinpoint.
 
 ## What this does
 
-AWS Pinpoint is a bulk email sending service, which means it handles common ESS
-features like click and open tracking, A/B testing, mail merge, and so on, automatically.
-Notably absent from Pinpoint (at the time this repo was created) is any built-in mechanism
+AWS Pinpoint is a bulk email sending service, which means it incorporates common ESS
+features like click and open tracking, A/B testing, mail merge, and so on. Notably
+absent from Pinpoint (at the time this repo was created) is any built-in mechanism
 for handling unsubscribes. This utility is meant to solve that.
 
 This creates a very simple serverless API to allow users to unsubscribe from your email
@@ -18,17 +18,17 @@ The API design is simple: there is a table created in DynamoDB which stores a co
 your list, indexed by a proprietary hash of the endpoint (aka email address). When a
 user clicks the unique unsubscribe link sent in the message, it fires a Lambda (via 
 API Gateway) which updates the record in Dynamo to mark it as unsubscribed, and then
-serves a simple HTML page.
+serves a simple HTML page. The "core API" is shown above in the red box.
 
-I have included Terraform scripts for setting up all of the necessary infrastructure
-components, as well as a Python script which imports your list of contacts (in CSV format)
-into Pinpoint (along with the unique hash which is generated), while simultaneously
+There is also a Python script includes which ties everything together and is meant to
+be run when first setting this up. The script imports your list of contacts into
+Pinpoint (along with the unique hash which is generated), while simultaneously
 populating the Dynamo data store.
 
 Cost was a major factor in the design of this system, hence why I chose Lambda and Dynamo.
 Under average use, it is very likely you won't see any cost added to your monthly AWS spend
-at all with this API. Realistically the only spend you'll see is whatever you spend on
-your Pinpoint campaign.
+at all with this API. Realistically the only costs you'll incur is whatever you spend on
+your Pinpoint campaign - not on this API.
 
 ## Installation
 
