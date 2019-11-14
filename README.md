@@ -57,4 +57,5 @@ If you don't want such an ugly URL for your unsubscribe link, you can add a Clou
 front of your API Gateway, assign it a certificate from ACM, enable HTTP to HTTPS forwarding, and set
 up a CNAME record in Route53 to point to the CF distribution. I didn't try to codify this part in
 Terraform (yet) because it's dependent on your domain name and certificate. It doesn't really matter
-that much though, since AWS is going to prepend your link with https://awstrack.me.
+that much though, since AWS is going to prepend your link with `awstrack.me` (so it will look ugly
+to the user no matter what).
