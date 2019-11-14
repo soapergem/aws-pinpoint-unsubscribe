@@ -7,7 +7,3 @@ provider "aws" {
   # profile = "your-profile-name"
   version = ">= 2.35.0"
 }
-
-provider "template" {
-  version = ">= 2.1.2"
-}
