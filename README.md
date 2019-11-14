@@ -2,6 +2,34 @@
 
 A simple serverless API for handling unsubscribes with AWS Pinpoint.
 
+## What this does
+
+AWS Pinpoint is a bulk email sending service, which means it handles common ESS
+features like click and open tracking, A/B testing, mail merge, and so on, automatically.
+Notably absent from Pinpoint (at the time this repo was created) is any built-in mechanism
+for handling unsubscribes. This utility is meant to solve that.
+
+This creates a very simple serverless API to allow users to unsubscribe from your email
+campaigns and thus stay in compliance with the law.
+
+![architecture diagram](docs/diagram.png "Overview of Architecture")
+
+The API design is simple: there is a table created in DynamoDB which stores a copy of
+your list, indexed by a proprietary hash of the endpoint (aka email address). When a
+user clicks the unique unsubscribe link sent in the message, it fires a Lambda (via 
+API Gateway) which updates the record in Dynamo to mark it as unsubscribed, and then
+serves a simple HTML page.
+
+I have included Terraform scripts for setting up all of the necessary infrastructure
+components, as well as a Python script which imports your list of contacts (in CSV format)
+into Pinpoint (along with the unique hash which is generated), while simultaneously
+populating the Dynamo data store.
+
+Cost was a major factor in the design of this system, hence why I chose Lambda and Dynamo.
+Under average use, it is very likely you won't see any cost added to your monthly AWS spend
+at all with this API. Realistically the only spend you'll see is whatever you spend on
+your Pinpoint campaign.
+
 ## Installation
 
 Run the Terraform scripts first. This will print various outputs that you will need

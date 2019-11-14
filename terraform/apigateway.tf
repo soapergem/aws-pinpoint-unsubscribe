@@ -7,6 +7,28 @@ resource "aws_api_gateway_rest_api" "unsubscribe" {
   }
 }
 
+resource "aws_api_gateway_deployment" "unsubscribe" {
+  rest_api_id = "${aws_api_gateway_rest_api.unsubscribe.id}"
+
+  depends_on = [
+    "aws_api_gateway_method.root",
+    "aws_api_gateway_integration.root",
+    "aws_api_gateway_method.hash",
+    "aws_api_gateway_integration.hash",
+  ]
+}
+
+resource "aws_api_gateway_stage" "unsubscribe" {
+  rest_api_id   = aws_api_gateway_rest_api.unsubscribe.id
+  deployment_id = aws_api_gateway_deployment.unsubscribe.id
+  stage_name    = var.stage_name
+
+  access_log_settings {
+    destination_arn = aws_cloudwatch_log_group.unsubscribe.arn
+    format          = templatefile("templates/common_log_format.txt", {})
+  }
+}
+
 ########################################
 
 resource "aws_api_gateway_method" "root" {
@@ -55,6 +77,14 @@ resource "aws_api_gateway_integration_response" "root" {
   response_templates = {
     "text/html" = templatefile("templates/integration_response.vtl", {})
   }
+}
+
+resource "aws_lambda_permission" "root" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.unsubscribe.arn
+  principal     = "apigateway.amazonaws.com"
+  source_arn    = "arn:aws:execute-api:${var.region}:${local.account_id}:${aws_api_gateway_rest_api.unsubscribe.id}/*/${aws_api_gateway_method.root.http_method}/"
 }
 
 ########################################
@@ -111,38 +141,6 @@ resource "aws_api_gateway_integration_response" "hash" {
   response_templates = {
     "text/html" = templatefile("templates/integration_response.vtl", {})
   }
-}
-
-########################################
-
-resource "aws_api_gateway_deployment" "unsubscribe" {
-  rest_api_id = "${aws_api_gateway_rest_api.unsubscribe.id}"
-
-  depends_on = [
-    "aws_api_gateway_method.root",
-    "aws_api_gateway_integration.root",
-    "aws_api_gateway_method.hash",
-    "aws_api_gateway_integration.hash",
-  ]
-}
-
-resource "aws_api_gateway_stage" "unsubscribe" {
-  rest_api_id   = aws_api_gateway_rest_api.unsubscribe.id
-  deployment_id = aws_api_gateway_deployment.unsubscribe.id
-  stage_name    = var.stage_name
-
-  access_log_settings {
-    destination_arn = aws_cloudwatch_log_group.unsubscribe.arn
-    format          = templatefile("templates/common_log_format.txt", {})
-  }
-}
-
-resource "aws_lambda_permission" "root" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.unsubscribe.arn
-  principal     = "apigateway.amazonaws.com"
-  source_arn    = "arn:aws:execute-api:${var.region}:${local.account_id}:${aws_api_gateway_rest_api.unsubscribe.id}/*/${aws_api_gateway_method.root.http_method}/"
 }
 
 resource "aws_lambda_permission" "hash" {
