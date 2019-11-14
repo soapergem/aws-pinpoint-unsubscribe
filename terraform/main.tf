@@ -3,7 +3,7 @@ terraform {
 }
 
 provider "aws" {
-  region = "us-east-1"
+  region = var.region
   # profile = "your-profile-name"
   version = ">= 2.35.0"
 }
