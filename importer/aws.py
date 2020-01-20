@@ -1,4 +1,5 @@
 import boto3
+from boto3.dynamodb.conditions import Attr
 
 # set this to something if you want to use a profile
 AWS_PROFILE_NAME = None
@@ -9,6 +10,12 @@ def get_dynamo_client():
     session = boto3.Session(profile_name=AWS_PROFILE_NAME, region_name=AWS_REGION)
     client = session.client("dynamodb")
     return client
+
+
+def get_dynamo_resource():
+    session = boto3.Session(profile_name=AWS_PROFILE_NAME, region_name=AWS_REGION)
+    resource = session.resource("dynamodb")
+    return resource
 
 
 def import_and_create_segment(app_id, segment_name, role_arn, s3_url):
@@ -26,6 +33,32 @@ def import_and_create_segment(app_id, segment_name, role_arn, s3_url):
         },
     )
     return response.get("ImportJobResponse", {}).get("Id")
+
+
+def get_opt_outs_from_dynamo(resource, table_name):
+    table = resource.Table(table_name)
+    response = table.scan(
+        ProjectionExpression="email_address",
+        FilterExpression=Attr("unsubscribe").eq(True),
+    )
+
+    count = response.get("Count")
+    start_key = response.get("LastEvaluatedKey")
+    opt_outs = [x.get("email_address") for x in response.get("Items")]
+
+    while count > 0 and start_key:
+
+        response = table.scan(
+            ProjectionExpression="email_address",
+            FilterExpression=Attr("unsubscribe").eq(True),
+            ExclusiveStartKey=start_key,
+        )
+
+        count = response.get("Count")
+        start_key = response.get("LastEvaluatedKey")
+        opt_outs += [x.get("email_address") for x in response.get("Items")]
+
+    return opt_outs
 
 
 def insert_batch_to_dynamo(client, table_name, batch):
