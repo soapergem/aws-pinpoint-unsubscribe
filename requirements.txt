@@ -5,12 +5,26 @@
 #    pip-compile
 #
 boto3==1.10.16
-botocore==1.13.16         # via boto3, s3transfer
+    # via -r requirements.in
+botocore==1.13.16
+    # via
+    #   boto3
+    #   s3transfer
 click==7.0
-docutils==0.15.2          # via botocore
-jmespath==0.9.4           # via boto3, botocore
-python-dateutil==2.8.0    # via botocore
-s3transfer==0.2.1         # via boto3
-six==1.13.0               # via python-dateutil
+    # via -r requirements.in
+docutils==0.15.2
+    # via botocore
+jmespath==0.9.4
+    # via
+    #   boto3
+    #   botocore
+python-dateutil==2.8.0
+    # via botocore
+s3transfer==0.2.1
+    # via boto3
+six==1.13.0
+    # via python-dateutil
 tqdm==4.38.0
-urllib3==1.25.7           # via botocore
+    # via -r requirements.in
+urllib3==1.25.8
+    # via botocore
