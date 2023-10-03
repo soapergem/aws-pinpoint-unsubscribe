@@ -11,10 +11,10 @@ resource "aws_api_gateway_deployment" "unsubscribe" {
   rest_api_id = "${aws_api_gateway_rest_api.unsubscribe.id}"
 
   depends_on = [
-    "aws_api_gateway_method.root",
-    "aws_api_gateway_integration.root",
-    "aws_api_gateway_method.hash",
-    "aws_api_gateway_integration.hash",
+    aws_api_gateway_method.root,
+    aws_api_gateway_integration.root,
+    aws_api_gateway_method.hash,
+    aws_api_gateway_integration.hash,
   ]
 }
 
@@ -68,7 +68,7 @@ resource "aws_api_gateway_integration_response" "root" {
   resource_id = aws_api_gateway_rest_api.unsubscribe.root_resource_id
   http_method = aws_api_gateway_method.root.http_method
   status_code = aws_api_gateway_method_response.root.status_code
-  depends_on  = ["aws_api_gateway_integration.root"]
+  depends_on  = [aws_api_gateway_integration.root]
 
   response_parameters = {
     "method.response.header.Content-Type" = "'text/html'"
@@ -132,7 +132,7 @@ resource "aws_api_gateway_integration_response" "hash" {
   resource_id = aws_api_gateway_resource.hash.id
   http_method = aws_api_gateway_method.hash.http_method
   status_code = aws_api_gateway_method_response.hash.status_code
-  depends_on  = ["aws_api_gateway_integration.hash"]
+  depends_on  = [aws_api_gateway_integration.hash]
 
   response_parameters = {
     "method.response.header.Content-Type" = "'text/html'"

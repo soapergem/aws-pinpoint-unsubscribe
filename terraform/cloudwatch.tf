@@ -11,7 +11,7 @@ resource "aws_api_gateway_method_settings" "unsubscribe" {
     logging_level   = "INFO"
   }
 
-  depends_on = ["aws_api_gateway_account.apigateway"]
+  depends_on = [aws_api_gateway_account.apigateway]
 }
 
 resource "aws_api_gateway_account" "apigateway" {

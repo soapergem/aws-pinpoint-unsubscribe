@@ -2,6 +2,7 @@ __pycache__/
 .python-version
 *.tfstate
 *.tfstate.*
+**/.terraform*
 **/.terraform/*
 *.csv
 *.zip
